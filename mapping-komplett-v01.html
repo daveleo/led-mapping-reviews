@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Mapping-Komplett Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: internal review of one NovaLCT .scr file: verdict, the two screens, findings as numbered cards, then screen 2 and screen 1 in detail (images + generated tables), the files, and how it was checked. */
+:root {
+  --page: #f4f6f6; --surface: #fcfcfb; --ink: #0f1a1d; --ink-2: #4b585c; --muted: #7c8689; --rule: #dde2e3;
+  --accent: #1d6b73; --accent-soft: #e3f0f1;
+  --good: #0ca30c; --warn: #fab219; --crit: #d03b3b; --neutral: #a9b3b6;
+  --crit-bg: #f8e1e1; --warn-bg: #fdf1d6; --flag-bg: #fbf3e4;
+  --font-head: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --page: #0f1416; --surface: #1a1a19; --ink: #f2f4f4; --ink-2: #c3c9cb; --muted: #8d979a; --rule: #2e3739; --accent: #6cc0c8; --accent-soft: #16292c; --neutral: #6b7477; --crit-bg: #3a1a1a; --warn-bg: #3a2f12; --flag-bg: #2a2416; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --page: #0f1416; --surface: #1a1a19; --ink: #f2f4f4; --ink-2: #c3c9cb; --muted: #8d979a; --rule: #2e3739; --accent: #6cc0c8; --accent-soft: #16292c; --neutral: #6b7477; --crit-bg: #3a1a1a; --warn-bg: #3a2f12; --flag-bg: #2a2416; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--ink); font: 15px/1.6 var(--font-body); margin: 0; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 64px; display: grid; gap: 38px; }
+section { display: grid; gap: 14px; min-width: 0; }
+h1 { font: 600 2.2rem/1.1 var(--font-head); margin: 0; text-wrap: balance; }
+h2 { font: 600 1.45rem/1.2 var(--font-head); margin: 0; text-wrap: balance; }
+h3 { font: 600 1.08rem/1.3 var(--font-head); margin: 0; }
+p { margin: 0; max-width: 76ch; }
+.eyebrow { font: 500 12px/1.2 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.meta { font: 13px/1.5 var(--font-mono); color: var(--muted); }
+.lede { font-size: 1.1rem; line-height: 1.55; color: var(--ink-2); max-width: 74ch; }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: .9em; }
+header { display: grid; gap: 12px; }
+.verdict { background: var(--accent-soft); border: 1px solid var(--rule); border-left: 4px solid var(--accent); padding: 18px 22px; display: grid; gap: 10px; }
+.verdict p { max-width: 86ch; }
+.tw { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 11px; border-bottom: 1px solid var(--rule); }
+th { font: 500 11.5px/1.3 var(--font-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--page); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+th.num { text-align: right; }
+tr.flag td { background: var(--flag-bg); }
+.chip { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1.2 var(--font-mono); padding: 3px 8px; border: 1px solid var(--rule); border-radius: 999px; background: var(--page); color: var(--ink); margin: 1px 4px 1px 0; }
+.chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--neutral)); flex: none; }
+.c-good { --c: var(--good); } .c-warn { --c: var(--warn); } .c-crit { --c: var(--crit); } .c-neutral { --c: var(--neutral); }
+.issues { display: grid; gap: 12px; }
+.issue { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--c, var(--neutral)); padding: 14px 18px; display: grid; gap: 8px; }
+.issue.c-crit { border-left-color: var(--crit); } .issue.c-warn { border-left-color: var(--warn); }
+.issue .top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.issue .n { font: 600 1.05rem/1 var(--font-mono); color: var(--muted); }
+.issue p { font-size: 14.5px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { font-size: 13.5px; color: var(--ink-2); max-width: 90ch; }
+.shot { background: #000; border: 1px solid var(--rule); overflow-x: auto; }
+.shot img { display: block; max-width: none; }
+.shot.fit img { max-width: 100%; height: auto; }
+.pix { image-rendering: pixelated; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.box { background: var(--surface); border: 1px solid var(--rule); padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.box ul { margin: 0; padding-left: 1.15em; display: grid; gap: 7px; font-size: 14px; }
+.dl a { white-space: nowrap; }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 14px; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .wrap { padding-inline: 16px; } h1 { font-size: 1.8rem; } th, td { padding: 7px 8px; font-size: 13px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Expromo · internal · NovaLCT mapping review</div>
+  <h1>Mapping-Komplett-V01.scr: what's in it, and what to check</h1>
+  <p class="lede">A NovaLCT screen file with two screens. Screen 1 is a clean 6 × 9 cabinet layout. Screen 2 is a band of 27 thin strips, 1886 × 15 px, with two pairs of receiving cards on the same pixels, a right end beyond the file's screen area, and a sending-card number to confirm. Below: the findings, cabinet maps for both screens, and every file.</p>
+  <p class="meta">Checked 12 Oct 2026 · file 1,970 bytes, SHA-256 <code>b327012fd9d1…fc05</code>, checksums valid · decoded with Grid_System <code>make_grid.py</code> · IDs as in NovaLCT: sending card-port-receiving card</p>
+</header>
+
+<section aria-labelledby="h-short">
+  <h2 id="h-short">In short</h2>
+  <div class="verdict">
+    <p><strong>Screen 1 is fine as mapped</strong>, with one question about how its four ports are split.</p>
+    <p><strong>Screen 2 needs four checks before it goes on site:</strong> two pairs of receiving cards that share pixels (most likely a typing error), cards that reach past the 1680 px screen area, the sending-card number (3, with nothing on 2), and whether its 2–4 px tall "cabinets" really are LED strips.</p>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Screen 1</th><th>Screen 2</th></tr></thead>
+    <tbody>
+      <tr><td>Screen type in NovaLCT</td><td>standard (regular grid)</td><td>complex (each card placed by hand)</td></tr>
+      <tr><td>Sending card</td><td>1</td><td>3</td></tr>
+      <tr><td>Ports</td><td>4</td><td>1</td></tr>
+      <tr><td>Receiving cards</td><td>54 (6 columns × 9 rows)</td><td>27</td></tr>
+      <tr><td>Card size</td><td>72 × 32 px, all the same</td><td>128–366 × 2–4 px, all different</td></tr>
+      <tr><td>Position · size</td><td>0,0 · 432 × 288 px</td><td>0,280 · 1886 × 15 px</td></tr>
+      <tr><td>Status</td><td><span class="chip c-good">OK</span><span class="chip c-neutral">1 question</span></td><td><span class="chip c-crit">1 likely error</span><span class="chip c-warn">2 checks</span><span class="chip c-neutral">1 to confirm</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="h-issues">
+  <h2 id="h-issues">What to check</h2>
+  <div class="issues">
+    <div class="issue c-crit">
+      <div class="top"><span class="n">1</span><h3>Screen 2: two pairs of receiving cards cover the same pixels</h3><span class="chip c-crit">likely error</span></div>
+      <p>3-1-16 (x 1236–1488) and 3-1-17 (x 1404–1734) share x 1404–1488; 3-1-17 and 3-1-18 (x 1650–1886) share x 1650–1734, on the row y 286–289. Each overlap is exactly 84 px. Everywhere else on this screen a card starts exactly where its left neighbour ends.</p>
+      <p><strong>Effect:</strong> NovaLCT accepts it, but the same 84 px of picture goes to two strips at each of those joins, so the image doesn't line up there.</p>
+      <p><strong>Likely fix:</strong> widths 168 for 3-1-16 and 246 for 3-1-17 (instead of 252 and 330) close both overlaps and leave every position as it is. Moving 3-1-17 to x 1488 and 3-1-18 to x 1818 would also close them, but the row would then end at x 2054. Measuring the real strips tells which one is right. <a href="#h-s2">See the zoom below.</a></p>
+    </div>
+    <div class="issue c-warn">
+      <div class="top"><span class="n">2</span><h3>Screen 2 reaches past the screen area in the file</h3><span class="chip c-warn">check</span></div>
+      <p>The file's screen area is 1680 × 1050. 3-1-17 ends at x 1734 and 3-1-18 at x 1886, 54 and 206 px past 1680. If sending card 3's input is 1680 px wide, those pixels get no picture, so most of 3-1-18 stays black. With a 1920 × 1080 input they are fine.</p>
+      <p><strong>Check:</strong> the input resolution of sending card 3. Fixing item 1 by moving cards rather than shortening them would push the end further right.</p>
+    </div>
+    <div class="issue c-warn">
+      <div class="top"><span class="n">3</span><h3>Screen 2 is on sending card 3; nothing uses sending card 2</h3><span class="chip c-warn">check</span></div>
+      <p>Screen 1 is on sending card 1. If the system has only two sending cards (or one controller with two outputs), screen 2 belongs on sending card 2; on card 3 it gets no data.</p>
+      <p><strong>Check:</strong> the hardware chain against NovaLCT's list of sending cards.</p>
+    </div>
+    <div class="issue">
+      <div class="top"><span class="n">4</span><h3>Screen 2's "cabinets" are 2–4 px tall</h3><span class="chip c-neutral">confirm</span></div>
+      <p>All 27 receiving cards are 128–366 px wide and only 2, 3 or 4 px tall, stacked into seven rows between y 280 and 295. That fits LED strips or pixel lines, one receiving card per strip group. If they are meant to be ordinary cabinets, the heights and Y positions are wrong.</p>
+      <p><strong>Confirm</strong> which product screen 2 is.</p>
+    </div>
+    <div class="issue">
+      <div class="top"><span class="n">5</span><h3>Screen 1: ports 2 and 3 carry one column each</h3><span class="chip c-neutral">question</span></div>
+      <p>Port 1 serves columns 1–2 and port 4 columns 5–6 (18 cards each, up one column and down the next); ports 2 and 3 serve only column 3 and column 4 (9 cards each, bottom to top). That is fine electrically: the busiest port carries 41,472 px.</p>
+      <p><strong>Check</strong> that the cables run this way. If the site is wired as three ports of two columns each, ports 2–4 are mapped wrong.</p>
+    </div>
+    <div class="issue">
+      <div class="top"><span class="n">6</span><h3>Minor: two gaps, and two small differences from NovaLCT's own files</h3><span class="chip c-neutral">minor</span></div>
+      <p>On screen 2's bottom row (y 292–295), x 128–256 and x 824–952 have no card: fine if the strips really have gaps there. The file stores corner-point data for screen 1 only, and its screen 1 block lacks 15 bytes that NovaLCT's own files carry. Both point to another NovaLCT version or an edited file; worth knowing if NovaLCT complains when loading it.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-s2">
+  <h2 id="h-s2">Screen 2 in detail</h2>
+  <p>Screen 2 is only 15 px tall, so the pictures below are drawn 16 times taller than real to make room for labels. Each card is labelled with its ID, then StartX,StartY and Width × Height from the file. The red hatching marks pixels that two cards share; the thin line is the data order, starting at S.</p>
+  <figure>
+    <div class="shot"><img src="mapping-komplett-v01/zoom_overlaps_and_edge.png" width="696" height="192" alt="Zoom on the right end of screen 2: the overlaps of 3-1-16/3-1-17 and 3-1-17/3-1-18, and the x 1680 edge of the screen area"></div>
+    <figcaption><strong>Items 1 and 2.</strong> The two 84 px overlaps, and the dashed x 1680 line: everything to its right is outside the file's screen area.</figcaption>
+  </figure>
+  <figure>
+    <div class="shot"><img src="mapping-komplett-v01/zoom_bottom_rows.png" width="1040" height="186" alt="Zoom on the left part of screen 2: the bottom row with gaps at x 128–256 and x 824–952, and the data path starting at 3-1-1"></div>
+    <figcaption><strong>Item 6.</strong> The bottom row with its gaps (x 128–256 and x 824–952), and the start of the data path at 3-1-1.</figcaption>
+  </figure>
+  <figure>
+    <div class="shot"><img src="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_diagram_16x_taller.png" width="1986" height="400" alt="The whole of screen 2, drawn 16 times taller than real, with every receiving card labelled"></div>
+    <figcaption>The whole screen (scroll sideways). <a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_diagram_16x_taller.png">Open full size</a>. The data runs row by row, each row left to right, from the bottom row (y 292) up to the top row (y 280).</figcaption>
+  </figure>
+  <figure>
+    <div class="shot fit"><img class="pix" src="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_cabinets.png" width="1886" height="15" style="width:100%;height:60px" alt="Screen 2 cabinet map: coloured bars, one per receiving card"></div>
+    <figcaption>The cabinet map to play on screen 2, stretched here to 60 px tall. Real size is 1886 × 15: each receiving card lights as one solid bar, and neighbours in the chain get different colours (magenta, cyan, yellow).</figcaption>
+  </figure>
+  <div class="tw"><table>
+    <thead><tr><th>Card</th><th class="num">StartX</th><th class="num">StartY</th><th class="num">Width</th><th class="num">Height</th><th class="num">Ends at x</th><th>Note</th></tr></thead>
+    <tbody>
+<tr><td><strong>3-1-1</strong></td><td class="num">0</td><td class="num">292</td><td class="num">128</td><td class="num">3</td><td class="num">128</td><td></td></tr>
+<tr><td><strong>3-1-2</strong></td><td class="num">256</td><td class="num">292</td><td class="num">284</td><td class="num">3</td><td class="num">540</td><td></td></tr>
+<tr><td><strong>3-1-3</strong></td><td class="num">540</td><td class="num">292</td><td class="num">284</td><td class="num">3</td><td class="num">824</td><td></td></tr>
+<tr><td><strong>3-1-4</strong></td><td class="num">952</td><td class="num">291</td><td class="num">128</td><td class="num">4</td><td class="num">1080</td><td></td></tr>
+<tr><td><strong>3-1-5</strong></td><td class="num">1080</td><td class="num">291</td><td class="num">156</td><td class="num">4</td><td class="num">1236</td><td></td></tr>
+<tr><td><strong>3-1-6</strong></td><td class="num">384</td><td class="num">289</td><td class="num">156</td><td class="num">3</td><td class="num">540</td><td></td></tr>
+<tr><td><strong>3-1-7</strong></td><td class="num">540</td><td class="num">289</td><td class="num">156</td><td class="num">3</td><td class="num">696</td><td></td></tr>
+<tr><td><strong>3-1-8</strong></td><td class="num">696</td><td class="num">288</td><td class="num">128</td><td class="num">4</td><td class="num">824</td><td></td></tr>
+<tr><td><strong>3-1-9</strong></td><td class="num">824</td><td class="num">288</td><td class="num">128</td><td class="num">4</td><td class="num">952</td><td></td></tr>
+<tr><td><strong>3-1-10</strong></td><td class="num">952</td><td class="num">288</td><td class="num">128</td><td class="num">3</td><td class="num">1080</td><td></td></tr>
+<tr><td><strong>3-1-11</strong></td><td class="num">1080</td><td class="num">288</td><td class="num">156</td><td class="num">3</td><td class="num">1236</td><td></td></tr>
+<tr><td><strong>3-1-12</strong></td><td class="num">384</td><td class="num">286</td><td class="num">156</td><td class="num">3</td><td class="num">540</td><td></td></tr>
+<tr><td><strong>3-1-13</strong></td><td class="num">540</td><td class="num">286</td><td class="num">156</td><td class="num">3</td><td class="num">696</td><td></td></tr>
+<tr><td><strong>3-1-14</strong></td><td class="num">696</td><td class="num">286</td><td class="num">256</td><td class="num">2</td><td class="num">952</td><td></td></tr>
+<tr><td><strong>3-1-15</strong></td><td class="num">952</td><td class="num">286</td><td class="num">284</td><td class="num">2</td><td class="num">1236</td><td></td></tr>
+<tr class="flag"><td><strong>3-1-16</strong></td><td class="num">1236</td><td class="num">286</td><td class="num">252</td><td class="num">3</td><td class="num">1488</td><td><span class="chip c-crit">overlaps 3-1-17 by 84 px</span></td></tr>
+<tr class="flag"><td><strong>3-1-17</strong></td><td class="num">1404</td><td class="num">286</td><td class="num">330</td><td class="num">3</td><td class="num">1734</td><td><span class="chip c-crit">overlaps 3-1-16 by 84 px</span> <span class="chip c-crit">overlaps 3-1-18 by 84 px</span> <span class="chip c-warn">54 px past x 1680</span></td></tr>
+<tr class="flag"><td><strong>3-1-18</strong></td><td class="num">1650</td><td class="num">286</td><td class="num">236</td><td class="num">3</td><td class="num">1886</td><td><span class="chip c-crit">overlaps 3-1-17 by 84 px</span> <span class="chip c-warn">206 px past x 1680</span></td></tr>
+<tr><td><strong>3-1-19</strong></td><td class="num">394</td><td class="num">284</td><td class="num">366</td><td class="num">2</td><td class="num">760</td><td></td></tr>
+<tr><td><strong>3-1-20</strong></td><td class="num">760</td><td class="num">284</td><td class="num">256</td><td class="num">2</td><td class="num">1016</td><td></td></tr>
+<tr><td><strong>3-1-21</strong></td><td class="num">1016</td><td class="num">284</td><td class="num">288</td><td class="num">2</td><td class="num">1304</td><td></td></tr>
+<tr><td><strong>3-1-22</strong></td><td class="num">394</td><td class="num">280</td><td class="num">146</td><td class="num">4</td><td class="num">540</td><td></td></tr>
+<tr><td><strong>3-1-23</strong></td><td class="num">540</td><td class="num">280</td><td class="num">220</td><td class="num">4</td><td class="num">760</td><td></td></tr>
+<tr><td><strong>3-1-24</strong></td><td class="num">760</td><td class="num">280</td><td class="num">128</td><td class="num">4</td><td class="num">888</td><td></td></tr>
+<tr><td><strong>3-1-25</strong></td><td class="num">888</td><td class="num">280</td><td class="num">128</td><td class="num">4</td><td class="num">1016</td><td></td></tr>
+<tr><td><strong>3-1-26</strong></td><td class="num">1016</td><td class="num">280</td><td class="num">142</td><td class="num">4</td><td class="num">1158</td><td></td></tr>
+<tr><td><strong>3-1-27</strong></td><td class="num">1158</td><td class="num">280</td><td class="num">146</td><td class="num">4</td><td class="num">1304</td><td></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="h-s1">
+  <h2 id="h-s1">Screen 1 in detail</h2>
+  <figure>
+    <div class="shot fit"><img class="pix" src="mapping-komplett-v01/Mapping-Komplett-V01_Screen_1_cabinets.png" width="432" height="288" style="width:100%;max-width:864px" alt="Screen 1 cabinet map: 6 columns by 9 rows, each cabinet labelled with its ID, data paths per port"></div>
+    <figcaption>The cabinet map to play on screen 1, shown here at twice its real size (432 × 288). Each cabinet shows its ID; each port's data path is drawn in its own colour, starting at S where the cable enters.</figcaption>
+  </figure>
+  <div class="tw"><table>
+    <thead><tr><th>Sending card-port</th><th class="num">Cards</th><th>Columns</th><th>Data path</th><th>First card</th><th class="num">Pixels</th></tr></thead>
+    <tbody>
+<tr><td><strong>1-1</strong></td><td class="num">18</td><td>1–2</td><td>up column 1, then down column 2</td><td>1-1-1 at 0,256 (bottom)</td><td class="num">41,472</td></tr>
+<tr><td><strong>1-2</strong></td><td class="num">9</td><td>3</td><td>up column 3</td><td>1-2-1 at 144,256 (bottom)</td><td class="num">20,736</td></tr>
+<tr><td><strong>1-3</strong></td><td class="num">9</td><td>4</td><td>up column 4</td><td>1-3-1 at 216,256 (bottom)</td><td class="num">20,736</td></tr>
+<tr><td><strong>1-4</strong></td><td class="num">18</td><td>5–6</td><td>up column 5, then down column 6</td><td>1-4-1 at 288,256 (bottom)</td><td class="num">41,472</td></tr>
+    </tbody>
+  </table></div>
+  <p>Numbering is continuous on every port (1 to n, no gaps or duplicates), every step goes to a neighbouring cabinet, and no cabinets overlap.</p>
+</section>
+
+<section aria-labelledby="h-files">
+  <h2 id="h-files">Files</h2>
+  <div class="tw"><table>
+    <thead><tr><th>File</th><th>What it is</th><th>Size</th><th>Download</th></tr></thead>
+    <tbody>
+      <tr><td>Mapping-Komplett-V01.scr</td><td>The NovaLCT file as received</td><td>1,970 bytes</td><td class="dl"><a href="mapping-komplett-v01/Mapping-Komplett-V01.scr" download>.scr</a></td></tr>
+      <tr><td>Screen 1 cabinet map</td><td>Exact size, to play on screen 1: every cabinet shows its ID, data paths per port</td><td>432 × 288</td><td class="dl"><a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_1_cabinets.png">PNG</a> · <a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_1_cabinets.svg">SVG</a></td></tr>
+      <tr><td>Screen 2 cabinet map</td><td>Exact size, to play on screen 2: one solid bar per receiving card (no room for text)</td><td>1886 × 15</td><td class="dl"><a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_cabinets.png">PNG</a> · <a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_cabinets.svg">SVG</a></td></tr>
+      <tr><td>Screen 2 diagram</td><td>For reading, not for the LEDs: drawn 16× taller with IDs, positions, overlaps and data order</td><td>1986 × 400</td><td class="dl"><a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_diagram_16x_taller.png">PNG</a> · <a href="mapping-komplett-v01/Mapping-Komplett-V01_Screen_2_diagram_16x_taller.svg">SVG</a></td></tr>
+      <tr><td>Sending card 1 overview</td><td>Screen 1 at its position on sending card 1's input, padded to the file's screen area</td><td>1680 × 1050</td><td class="dl"><a href="mapping-komplett-v01/Mapping-Komplett-V01_SC1_overview_cabinets_1680x1050.png">PNG</a> · <a href="mapping-komplett-v01/Mapping-Komplett-V01_SC1_overview_cabinets_1680x1050.svg">SVG</a></td></tr>
+      <tr><td>Sending card 3 overview</td><td>Screen 2 at its position on sending card 3's input; 1886 wide because it reaches past the screen area</td><td>1886 × 1050</td><td class="dl"><a href="mapping-komplett-v01/Mapping-Komplett-V01_SC3_overview_cabinets_1886x1050.png">PNG</a> · <a href="mapping-komplett-v01/Mapping-Komplett-V01_SC3_overview_cabinets_1886x1050.svg">SVG</a></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="h-how">
+  <h2 id="h-how">How this was checked</h2>
+  <div class="two">
+    <div class="box">
+      <h3>Checked</h3>
+      <ul>
+        <li>Decoded with Grid_System's <code>make_grid.py</code>. Its reading of standard screens was corrected for this file (it gave the same cabinets as before on every earlier sample).</li>
+        <li>Per port: receiving-card numbers run 1 to n with no gaps or duplicates, and each step goes to a neighbouring card.</li>
+        <li>Overlaps and gaps pixel by pixel; each screen's extent against the file's screen area; which sending cards are used.</li>
+        <li>The file's own checksums and length fields: all valid.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Not checked</h3>
+      <ul>
+        <li>The physical installation and how the cables really run.</li>
+        <li>Sending card 3's real input resolution, and how many sending cards the system has.</li>
+        <li>Which LED product screen 2 is, and the real lengths of its strips.</li>
+        <li>Loading the file in NovaLCT.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>Internal page for Expromo. It is not listed by search engines, but anyone with the link can open it. <a href="index.html">All mapping reviews</a></footer>
+</div>
+</body>
+</html>
