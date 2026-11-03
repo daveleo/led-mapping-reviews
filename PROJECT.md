@@ -46,4 +46,4 @@ First review published 2026-10-12: Mapping-Komplett-V01.scr. Screen 1 (sending c
 ## Links
 
 - Live: https://daveleo.github.io/led-mapping-reviews/
-- Related: `projects\grid-system` (make_grid.py decodes the `.scr` and draws the maps)
+- Related: [[projects/grid-system/PROJECT|Grid_System]] (make_grid.py decodes the `.scr` and draws the maps)
