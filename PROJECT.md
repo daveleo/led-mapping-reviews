@@ -5,7 +5,7 @@ priority:
 version: 2026-10-12
 deadline:
 next: Share the Mapping-Komplett-V01 review internally; update it when the four screen 2 checks are answered
-updated: 2026-10-12
+updated: 2026-11-04
 repo: daveleo/led-mapping-reviews
 url: https://daveleo.github.io/led-mapping-reviews/
 ---
